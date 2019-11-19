@@ -4,8 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
+import android.icu.text.UnicodeSetSpanner;
 import android.os.Bundle;
 import android.view.ViewTreeObserver;
+import android.webkit.WebBackForwardList;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
@@ -61,9 +63,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //뒤로가기이벤트
-    @Override
-    public void onBackPressed(){
+        @Override
+        public void onBackPressed(){
+        WebBackForwardList historyList = webView.copyBackForwardList();
         if(webView.canGoBack()){
+            String backTargetUrl = historyList.getItemAtIndex(historyList.getCurrentIndex() - 1).getUrl();
+            if(backTargetUrl.equals(getString(R.string.login)) || historyList.getCurrentItem().getUrl().equals(getString(R.string.login)) || backTargetUrl.equals(getString(R.string.loginchk))) {
+                webView.clearHistory();
+                long tempTime = System.currentTimeMillis();
+                long intervalTime = tempTime - backPrssedTime;
+                backPrssedTime = tempTime;
+                Toast.makeText(getApplicationContext(), "한번 더 뒤로가기 누를시 앱이 종료됩니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            else if(backTargetUrl.equals(getString(R.string.index))) {
+                webView.clearCache(true);
+                webView.loadUrl(getString(R.string.index));
+                refreshlayout.setRefreshing(false);
+            }
             webView.goBack();
         }else{
             long tempTime = System.currentTimeMillis();

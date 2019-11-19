@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">joycle</string>
+    <string name="login">http://joycle.itforone.co.kr/bbs/login.php</string>
     <string name="index">http://joycle.itforone.co.kr/</string>
+    <string name="loginchk">http://joycle.itforone.co.kr/bbs/login_check.php</string>
 </resources>
+
