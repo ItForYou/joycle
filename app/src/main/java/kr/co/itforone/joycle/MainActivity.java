@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.webview)    WebView webView;
     @BindView(R.id.refreshlayout)    SwipeRefreshLayout refreshlayout;
     private long backPrssedTime = 0;
+    public int flg_refresh = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
 
         Intent splash = new Intent(MainActivity.this,SplashActivity.class);
         startActivity(splash);
-
 
         webView.addJavascriptInterface(new WebviewJavainterface(this),"Android");
         webView.setWebViewClient(new ClientManager(this));
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         refreshlayout.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
-                if(webView.getScrollY() == 0){
+                if(webView.getScrollY() == 0 && flg_refresh==1){
                     refreshlayout.setEnabled(true);
                 }
                 else{
@@ -65,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
     //뒤로가기이벤트
         @Override
         public void onBackPressed(){
+
+
+
         WebBackForwardList historyList = webView.copyBackForwardList();
         if(webView.canGoBack()){
             String backTargetUrl = historyList.getItemAtIndex(historyList.getCurrentIndex() - 1).getUrl();
@@ -79,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
             else if(backTargetUrl.equals(getString(R.string.index))) {
                 webView.clearCache(true);
                 webView.loadUrl(getString(R.string.index));
-                refreshlayout.setRefreshing(false);
             }
             webView.goBack();
         }else{
@@ -95,4 +97,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    public void Norefresh(){
+        refreshlayout.setEnabled(false);
+    }
+    public void Yesrefresh(){
+        refreshlayout.setEnabled(true);
+    }
+
 }
+
